@@ -12,6 +12,6 @@ public class HeightGenerator {
     float kx =1f;
 
     public float getHeight(float x, float z, float time){
-        return FastMath.sin(kx * x - omega * time );
+        return -3 +  FastMath.sin(kx * x - omega * time );
     }
 }

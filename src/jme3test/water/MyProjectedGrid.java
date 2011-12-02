@@ -45,6 +45,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.system.Timer;
 import com.jme3.util.BufferUtils;
+import javax.vecmath.TexCoord2f;
 
 /**
  * <code>ProjectedGrid</code>
@@ -265,13 +266,13 @@ public class MyProjectedGrid extends Mesh {
         getBuffer(Type.Position).updateData(vertBuf);
         updateBound();
 
-        /* Texture stuff
+        // Texture stuff
         texs.rewind();
         for( int i = 0; i < getVertexCount(); i++ ) {
         texBufArray[i*2] = vertBufArray[i*3] * textureScale;
         texBufArray[i*2+1] = vertBufArray[i*3+2] * textureScale;
         }
-        texs.put( texBufArray ); */
+        texs.put( texBufArray );
 
 
     }
@@ -590,7 +591,8 @@ public class MyProjectedGrid extends Mesh {
      */
     private void buildTextureCoordinates() {
         texs = BufferUtils.createVector2Buffer(getVertexCount());
-        //setCoords( new TexCoord2f()., 0 );
+        
+        
 
         texs.clear();
 
@@ -600,6 +602,7 @@ public class MyProjectedGrid extends Mesh {
             vertBuf.get(); // ignore vert y coord.
             texs.put(vertBuf.get() * textureScale);
         }
+        setBuffer(Type.TexCoord, 2, texs);        
     }
     /**
      * <code>buildNormals</code> calculates the normals of each vertex that

@@ -39,6 +39,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.texture.Texture;
 
 /** Sample 1 - how to get started with the most simple JME 3 application.
  * Display a blue 3D cube and view from all sides by
@@ -46,7 +47,7 @@ import com.jme3.scene.Spatial.CullHint;
 public class TestProjectedGrid extends SimpleApplication {
 
     MyProjectedGrid grid;
-    Geometry geom1;
+    Geometry projectedGridGeometry;
     Triangle t;
 
     public static void main(String[] args){
@@ -66,15 +67,27 @@ public class TestProjectedGrid extends SimpleApplication {
         geom.setMaterial(mat);                   // set the cube's material
         rootNode.attachChild(geom);              // make the cube appear in the scene
 
-        grid = new MyProjectedGrid(timer, cam, 70, 50, 1.0f , new HeightGenerator());
-        geom1 = new Geometry("Box",  grid);  // create cube geometry from the shape
+        grid = new MyProjectedGrid(timer, cam, 70, 50, 1f , new HeightGenerator());
+        projectedGridGeometry = new Geometry("Projected Grid",  grid);  // create cube geometry from the shape
 
-        Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-        mat1.setColor("Color", ColorRGBA.Blue); // set color of material to blue
-        geom1.setMaterial(mat1);                   // set the cube's material
-        rootNode.attachChild(geom1);              // make the cube appear in the scene
+        //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
+        
+        //mat1.setColor("Color", ColorRGBA.Blue); // set color of material to blue
+        Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
+        
+        Texture t = assetManager.loadTexture("Textures/BumpMapTest/Tangent.png");
+        t.setWrap(Texture.WrapMode.Repeat);
+        mat_tl.setTexture("ColorMap",t );
+       // mat_tl.setColor("Color", new ColorRGBA(1f,0f,1f, 1f)); // purple
+        
+        projectedGridGeometry.setMaterial(mat_tl);
+        
+        
+        
+        //geom1.setMaterial(mat1);                   // set the cube's material
+        rootNode.attachChild(projectedGridGeometry);              // make the cube appear in the scene
 
-        geom1.setCullHint(CullHint.Never);
+        projectedGridGeometry.setCullHint(CullHint.Never);
     }
 
     @Override
