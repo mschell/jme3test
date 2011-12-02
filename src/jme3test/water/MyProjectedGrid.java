@@ -95,7 +95,7 @@ public class MyProjectedGrid extends Mesh {
     private Vector4f pointBottom = new Vector4f();
     private Vector3f realPoint = new Vector3f();
     public boolean freezeProjector = false;
-    public boolean useReal = false;
+    public boolean useReal = true;
     private Vector3f projectorLoc = new Vector3f();
     private Timer timer;
     private Camera cam;
@@ -200,7 +200,7 @@ public class MyProjectedGrid extends Mesh {
         if (useReal) {
             Vector3f fakeLoc = new Vector3f(projectorLoc);
             Vector3f fakePoint = new Vector3f(realPoint);
-            fakeLoc.addLocal(0, 100, 0);
+            fakeLoc.addLocal(0, 1000, 0);
 
             rangeMatrix = getMinMax(fakeLoc, fakePoint, cam);
         }
@@ -221,10 +221,10 @@ public class MyProjectedGrid extends Mesh {
 
 //        System.out.print("modelViewProjectionInverse 2:" +  modelViewProjectionInverse.toString());
 
-        if (useReal && rangeMatrix != null) {
-            rangeMatrix.multLocal(modelViewProjectionInverse);
-            modelViewProjectionInverse.set(rangeMatrix);
-        }
+       //  if (useReal && rangeMatrix != null) {
+       //     rangeMatrix.multLocal(modelViewProjectionInverse);
+       //     modelViewProjectionInverse.set(rangeMatrix);
+       //}
 
         source.set(0, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomLeft);

@@ -38,8 +38,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Plane;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
-import com.jme3.texture.Texture;
+import com.jme3.scene.shape.Sphere;
+import com.jme3.util.SkyFactory;
+import com.jme3.water.SimpleWaterProcessor;
 
 /** Sample 1 - how to get started with the most simple JME 3 application.
  * Display a blue 3D cube and view from all sides by
@@ -49,6 +56,12 @@ public class TestProjectedGrid extends SimpleApplication {
     MyProjectedGrid grid;
     Geometry projectedGridGeometry;
     Triangle t;
+    
+    Geometry lightSphere;
+    SimpleWaterProcessor waterProcessor;
+        
+    private Vector3f lightPos =  new Vector3f(33,12,-29);
+    
 
     public static void main(String[] args){
         TestProjectedGrid app = new TestProjectedGrid();
@@ -70,17 +83,17 @@ public class TestProjectedGrid extends SimpleApplication {
         grid = new MyProjectedGrid(timer, cam, 70, 50, 1f , new HeightGenerator());
         projectedGridGeometry = new Geometry("Projected Grid",  grid);  // create cube geometry from the shape
 
+        setSimpleWater();
         //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
         
         //mat1.setColor("Color", ColorRGBA.Blue); // set color of material to blue
-        Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
-        
-        Texture t = assetManager.loadTexture("Textures/BumpMapTest/Tangent.png");
-        t.setWrap(Texture.WrapMode.Repeat);
-        mat_tl.setTexture("ColorMap",t );
+        //Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
+        //Texture t = assetManager.loadTexture("Textures/BumpMapTest/Tangent.png");
+        //t.setWrap(Texture.WrapMode.Repeat);
+        //t.setAnisotropicFilter(1);
+        //mat_tl.setTexture("ColorMap",t );
        // mat_tl.setColor("Color", new ColorRGBA(1f,0f,1f, 1f)); // purple
-        
-        projectedGridGeometry.setMaterial(mat_tl);
+        //projectedGridGeometry.setMaterial(mat_tl);
         
         
         
@@ -97,5 +110,42 @@ public class TestProjectedGrid extends SimpleApplication {
        t.update();
     }
 
+    private void setSimpleWater(){
+        Node sceneNode = new Node("Scene");
+        // load sky
+        sceneNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
+        rootNode.attachChild(sceneNode);
+
+      
+        
+       waterProcessor = new SimpleWaterProcessor(assetManager);
+       //setting the scene to use for reflection
+       waterProcessor.setReflectionScene(sceneNode);
+       //setting the light position
+       waterProcessor.setLightPosition(lightPos);
+       
+       //setting the water plane
+       Vector3f waterLocation=new Vector3f(0,-20,0);
+       waterProcessor.setPlane(new Plane(Vector3f.UNIT_Y, waterLocation.dot(Vector3f.UNIT_Y)));
+       //setting the water color 
+       waterProcessor.setWaterColor(ColorRGBA.Brown);
+ 
+       viewPort.addProcessor(waterProcessor);
+ 
+       //the texture coordinates define the general size of the waves
+       grid.scaleTextureCoordinates(new Vector2f(6f,6f));
+ 
+       //creating a geom to attach the water material 
+       
+       //projectedGridGeometry.setLocalTranslation(-200, -20, 250);
+       //projectedGridGeometry.setLocalRotation(new Quaternion().fromAngleAxis(-FastMath.HALF_PI, Vector3f.UNIT_X));
+       //finally setting the material
+       projectedGridGeometry.setMaterial(waterProcessor.getMaterial());
+     
+
+        
+        
+        
+    }
 
 }
