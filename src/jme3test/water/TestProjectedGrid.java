@@ -29,7 +29,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package jme3test.water;
 
 import com.jme3.app.SimpleApplication;
@@ -54,80 +53,78 @@ public class TestProjectedGrid extends SimpleApplication {
     MyProjectedGrid grid;
     Geometry projectedGridGeometry;
     Triangle t;
-    
     Geometry lightSphere;
     SimpleWaterProcessor waterProcessor;
-        
-    private Vector3f lightPos =  new Vector3f(33,12,-29);
-    
+    private Vector3f lightPos = new Vector3f(33, 12, -29);
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         TestProjectedGrid app = new TestProjectedGrid();
         app.start(); // start JME3
     }
 
     @Override
     public void simpleInitApp() {
-        cam.setLocation(new Vector3f(0,2,10));
+        cam.setLocation(new Vector3f(100, 50, 100));
+        cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
+        cam.update();
         Box b = new Box(Vector3f.ZERO, 1, 1, 1); // create cube shape
         t = new Triangle();
-        Geometry geom = new Geometry("Box", t );  // create cube geometry from the shape
+        Geometry geom = new Geometry("Box", t);  // create cube geometry from the shape
         Material mat = new Material(assetManager,
-         "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
+                "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
         mat.setColor("Color", ColorRGBA.Orange); // set color of material to blue
         geom.setMaterial(mat);                   // set the cube's material
         rootNode.attachChild(geom);              // make the cube appear in the scene
 
-        grid = new MyProjectedGrid(timer, cam, 70, 50, 1f , new HeightGenerator());
-        projectedGridGeometry = new Geometry("Projected Grid",  grid);  // create cube geometry from the shape
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 0.01f, new WaterHeightGenerator());
+        projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
 
         setSimpleWater();
         //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-        
+
         //mat1.setColor("Color", ColorRGBA.White); // set color of material to blue
         Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
         Texture t = assetManager.loadTexture("Textures/BumpMapTest/Tangent.png");
         t.setWrap(Texture.WrapMode.Repeat);
         t.setAnisotropicFilter(1);
-        //mat_tl.setTexture("ColorMap",t );
-         // mat_tl.setColor("Color", new ColorRGBA(1f,0f,1f, 1f)); // purple
+        mat_tl.setTexture("ColorMap", t);
+        //mat_tl.setColor("Color", new ColorRGBA(1f,1f,1f, 1f)); // purple
         projectedGridGeometry.setMaterial(mat_tl);
-        
-        
-        
-        
-        rootNode.attachChild(projectedGridGeometry);              
 
-        projectedGridGeometry.setCullHint(CullHint.Never);
+
+
+
+        rootNode.attachChild(projectedGridGeometry);
+
+        //projectedGridGeometry.setCullHint(CullHint.Never);
     }
 
     @Override
     public void simpleUpdate(float tpf) {
-       //grid = // new MyProjectedGrid(timer, cam, 5, 5, 1.0f , new HeightGenerator());
-       grid.update(cam.getViewMatrix().clone());
-       t.update();
+        //grid = // new MyProjectedGrid(timer, cam, 5, 5, 1.0f , new HeightGenerator());
+        grid.update(cam.getViewMatrix().clone());
+        t.update();
     }
 
-    private void setSimpleWater(){
+    private void setSimpleWater() {
         Node sceneNode = new Node("Scene");
         // load sky
         sceneNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
         rootNode.attachChild(sceneNode);
 
-        WaterFilter waterFilter =  new WaterFilter(rootNode, new Vector3f(-4.9236743f, -1.27054665f, 5.896916f));
+        WaterFilter waterFilter = new WaterFilter(rootNode, new Vector3f(-4.9236743f, -1.27054665f, 5.896916f));
         waterFilter.setWaterHeight(2);
-        
+
         FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        
+
         fpp.addFilter(waterFilter);
-        
-        
-        
-        viewPort.addProcessor(fpp);
 
-        
-        
-        
+
+
+        //viewPort.addProcessor(fpp);
+
+
+
+
     }
-
 }

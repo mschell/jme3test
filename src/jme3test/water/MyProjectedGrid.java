@@ -95,7 +95,7 @@ public class MyProjectedGrid extends Mesh {
     private Vector4f pointBottom = new Vector4f();
     private Vector3f realPoint = new Vector3f();
     public boolean freezeProjector = false;
-    public boolean useReal = true;
+    public boolean useReal = false;
     private Vector3f projectorLoc = new Vector3f();
     private Timer timer;
     private Camera cam;
@@ -221,10 +221,10 @@ public class MyProjectedGrid extends Mesh {
 
 //        System.out.print("modelViewProjectionInverse 2:" +  modelViewProjectionInverse.toString());
 
-       //  if (useReal && rangeMatrix != null) {
-       //     rangeMatrix.multLocal(modelViewProjectionInverse);
-       //     modelViewProjectionInverse.set(rangeMatrix);
-       //}
+         if (useReal && rangeMatrix != null) {
+            rangeMatrix.multLocal(modelViewProjectionInverse);
+            modelViewProjectionInverse.set(rangeMatrix);
+         }
 
         source.set(0, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomLeft);
@@ -273,6 +273,7 @@ public class MyProjectedGrid extends Mesh {
         texBufArray[i*2+1] = vertBufArray[i*3+2] * textureScale;
         }
         texs.put( texBufArray );
+        getBuffer(Type.TexCoord).updateData(texs);
 
 
     }
