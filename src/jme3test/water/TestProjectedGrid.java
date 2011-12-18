@@ -36,18 +36,15 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.SimpleWaterProcessor;
-import com.jme3.water.WaterFilter;
 
 /** Sample 1 - how to get started with the most simple JME 3 application.
  * Display a blue 3D cube and view from all sides by
@@ -87,7 +84,7 @@ public class TestProjectedGrid extends SimpleApplication {
     tex_ml.setAnisotropicFilter(3);
     cube.setMaterial(mat_stl); 
     rootNode.attachChild(cube); 
-        //setSimpleWater();
+    addSkybox();
         //Material unshadedMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
         //unshadedMat.setColor("Color", ColorRGBA.White); // set color of material to blue
         Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
@@ -126,22 +123,19 @@ public class TestProjectedGrid extends SimpleApplication {
 
     }
 
-    private void setSimpleWater() {
-        Node sceneNode = new Node("Scene");
-        // load sky
-        sceneNode.attachChild(SkyFactory.createSky(assetManager, "Textures/Sky/Bright/BrightSky.dds", false));
-        rootNode.attachChild(sceneNode);
+    private void addSkybox() {
+        
+        String dir = "jme3test/water/data/skybox/";
+        Texture north = assetManager.loadTexture(dir + "1.jpg");
+        Texture south = assetManager.loadTexture(dir + "3.jpg");
+        Texture east =  assetManager.loadTexture(dir + "2.jpg");
+        Texture west =  assetManager.loadTexture(dir + "4.jpg");
+        Texture up = assetManager.loadTexture(dir + "6.jpg");        
+        Texture down = assetManager.loadTexture(dir + "5.jpg");
 
-        WaterFilter waterFilter = new WaterFilter(rootNode, new Vector3f(-4.9236743f, -1.27054665f, 5.896916f));
-        waterFilter.setWaterHeight(2);
-
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-
-        fpp.addFilter(waterFilter);
-
-
-
-        viewPort.addProcessor(fpp);
+        
+        Spatial sky = SkyFactory.createSky(assetManager, west,east,north,south,up,down);
+        rootNode.attachChild(sky);
 
 
 
