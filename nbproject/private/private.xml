@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/MyProjectedGrid.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/NaiveProjectedGrid.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/ProjectedTextureUtil.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/HeightGenerator.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/Triangle.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/texture/TestTexture3D.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/texture/TestTexture3DLoading.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/renderer/TestMultiViews.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/TestPostWaterLake.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/nbproject/private/private.properties</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/TestSimpleWater.java</file>
+        <file>file:/home/ms/jme-assets/JmeTests/src/jme3test/water/TestSceneWater.java</file>
+    </open-files>
 </project-private>
