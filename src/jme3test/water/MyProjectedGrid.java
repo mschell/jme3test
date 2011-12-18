@@ -166,30 +166,30 @@ public class MyProjectedGrid extends Mesh {
         viewPortLeft = camera.getViewPortLeft();
         viewPortBottom = camera.getViewPortBottom();
 
-        // System.out.println(camera.getModelViewMatrix().toString());
+        //System.out.println(camera.getViewMatrix().toString());
 
 
         modelViewMatrix.set(camera.getViewMatrix().clone());
         modelViewMatrix.transposeLocal();
-        
-      //  System.out.print("modelViewMatrix:" +  modelViewMatrix.toString());
+
+        //  System.out.print("modelViewMatrix:" +  modelViewMatrix.toString());
         projectionMatrix.set(camera.getProjectionMatrix().clone());
         projectionMatrix.transposeLocal();
-     // System.out.print("projectionMatrix:" +  projectionMatrix.toString());
+        // System.out.print("projectionMatrix:" +  projectionMatrix.toString());
 
 
         modelViewProjectionInverse.set(modelViewMatrix).multLocal(projectionMatrix);
-        
-     // System.out.print("modelViewProjectionInverse A :" +  modelViewProjectionInverse.toString());
+
+        // System.out.print("modelViewProjectionInverse A :" +  modelViewProjectionInverse.toString());
 
         modelViewProjectionInverse.invertLocal();
 
-       // System.out.print("modelViewProjectionInverse B :" +  modelViewProjectionInverse.toString());
+        // System.out.print("modelViewProjectionInverse B :" +  modelViewProjectionInverse.toString());
 
         source.set(0.5f, 0.5f);
         getWorldIntersection(height, source, modelViewProjectionInverse, pointFinal);
 
-       // System.out.println("pointFinal :" +  pointFinal.toString());
+        // System.out.println("pointFinal :" +  pointFinal.toString());
 
         pointFinal.multLocal(1.0f / pointFinal.getW());
         realPoint.set(pointFinal.getX(), pointFinal.getY(), pointFinal.getZ());
@@ -213,22 +213,22 @@ public class MyProjectedGrid extends Mesh {
 
         ProjectedTextureUtil.matrixProjection(fovY + 10.0f, viewPortWidth / viewPortHeight, cam.getFrustumNear(), cam.getFrustumFar(), projectionMatrix);
         projectionMatrix.transposeLocal();
-//        System.out.print("projectionMatrix 2:" +  projectionMatrix.toString());
-        
+        // System.out.print("projectionMatrix 2:" +  projectionMatrix.toString());
+
 
         modelViewProjectionInverse.set(modelViewMatrix).multLocal(projectionMatrix);
         modelViewProjectionInverse.invertLocal();
 
 //        System.out.print("modelViewProjectionInverse 2:" +  modelViewProjectionInverse.toString());
 
-         if (useReal && rangeMatrix != null) {
+        if (useReal && rangeMatrix != null) {
             rangeMatrix.multLocal(modelViewProjectionInverse);
             modelViewProjectionInverse.set(rangeMatrix);
-         }
+        }
 
         source.set(0, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomLeft);
-       // System.out.println("intersectBottomLeft : " + intersectBottomLeft.toString());
+        //System.out.println("intersectBottomLeft : " + intersectBottomLeft.toString());
 
         source.set(0, 1);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopLeft);
@@ -236,7 +236,8 @@ public class MyProjectedGrid extends Mesh {
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopRight);
         source.set(1, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomRight);
-       // System.out.println("intersectBottomRight : " + intersectBottomRight.toString());
+        System.out.println("intersectBottomRight : " + intersectBottomRight.toString());
+
         vertBuf.rewind();
         float du = 1.0f / (float) (sizeX - 1);
         float dv = 1.0f / (float) (sizeY - 1);
@@ -268,13 +269,57 @@ public class MyProjectedGrid extends Mesh {
 
         // Texture stuff
         texs.rewind();
-        for( int i = 0; i < getVertexCount(); i++ ) {
-        texBufArray[i*2] = vertBufArray[i*3] * textureScale;
-        texBufArray[i*2+1] = vertBufArray[i*3+2] * textureScale;
+        for (int i = 0; i < getVertexCount(); i++) {
+            texBufArray[i * 2] = vertBufArray[i * 3] * textureScale;
+            texBufArray[i * 2 + 1] = vertBufArray[i * 3 + 2] * textureScale;
         }
-        texs.put( texBufArray );
+        texs.put(texBufArray);
         getBuffer(Type.TexCoord).updateData(texs);
 
+
+        normBuf.rewind();
+        oppositePoint.set(0, 0, 0);
+        adjacentPoint.set(0, 0, 0);
+        rootPoint.set(0, 0, 0);
+        tempNorm.set(0, 0, 0);
+        int adj = 0, opp = 0, normalIndex = 0;
+        for (int row = 0; row < sizeY; row++) {
+            for (int col = 0; col < sizeX; col++) {
+                if (row == sizeY - 1) {
+                    if (col == sizeX - 1) { // last row, last col
+                        // up cross left
+                        adj = normalIndex - sizeX;
+                        opp = normalIndex - 1;
+                    } else { // last row, except for last col
+                        // right cross up
+                        adj = normalIndex + 1;
+                        opp = normalIndex - sizeX;
+                    }
+                } else {
+                    if (col == sizeX - 1) { // last column except for last row
+                        // left cross down
+                        adj = normalIndex - 1;
+                        opp = normalIndex + sizeX;
+                    } else { // most cases
+                        // down cross right
+                        adj = normalIndex + sizeX;
+                        opp = normalIndex + 1;
+                    }
+                }
+                rootPoint.set(vertBufArray[normalIndex * 3], vertBufArray[normalIndex * 3 + 1], vertBufArray[normalIndex * 3 + 2]);
+                adjacentPoint.set(vertBufArray[adj * 3], vertBufArray[adj * 3 + 1], vertBufArray[adj * 3 + 2]);
+                oppositePoint.set(vertBufArray[opp * 3], vertBufArray[opp * 3 + 1], vertBufArray[opp * 3 + 2]);
+                tempNorm.set(adjacentPoint).subtractLocal(rootPoint).crossLocal(oppositePoint.subtractLocal(rootPoint)).normalizeLocal();
+
+                normBufArray[normalIndex * 3] = tempNorm.x;
+                normBufArray[normalIndex * 3 + 1] = tempNorm.y;
+                normBufArray[normalIndex * 3 + 2] = tempNorm.z;
+
+                normalIndex++;
+            }
+        }
+        normBuf.put(normBufArray);
+        getBuffer(Type.Normal).updateData(normBuf);
 
     }
 
@@ -291,9 +336,9 @@ public class MyProjectedGrid extends Mesh {
         source.set(0, 1);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopLeft1);
         source.set(1, 1);
-        getWorldIntersection(height,source, modelViewProjectionInverse, intersectTopRight1);
+        getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopRight1);
         source.set(1, 0);
-        getWorldIntersection(height,source, modelViewProjectionInverse, intersectBottomRight1);
+        getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomRight1);
 
         Vector3f tmp = new Vector3f();
         tmp.set(intersectBottomLeft.getX(), intersectBottomLeft.getY(), intersectBottomLeft.getZ());
@@ -396,7 +441,7 @@ public class MyProjectedGrid extends Mesh {
         origin.set(screenPosition.getX() * 2 - 1, screenPosition.getY() * 2 - 1, -1, 1);
         direction.set(screenPosition.getX() * 2 - 1, screenPosition.getY() * 2 - 1, 1, 1);
 
-        
+
 
         origin = viewProjectionMatrix.transpose().mult(origin);
         direction = viewProjectionMatrix.transpose().mult(direction);
@@ -592,8 +637,8 @@ public class MyProjectedGrid extends Mesh {
      */
     private void buildTextureCoordinates() {
         texs = BufferUtils.createVector2Buffer(getVertexCount());
-        
-        
+
+
 
         texs.clear();
 
@@ -603,7 +648,7 @@ public class MyProjectedGrid extends Mesh {
             vertBuf.get(); // ignore vert y coord.
             texs.put(vertBuf.get() * textureScale);
         }
-        setBuffer(Type.TexCoord, 2, texs);        
+        setBuffer(Type.TexCoord, 2, texs);
     }
     /**
      * <code>buildNormals</code> calculates the normals of each vertex that

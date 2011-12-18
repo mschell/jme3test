@@ -32,14 +32,18 @@
 package jme3test.water;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import com.jme3.water.SimpleWaterProcessor;
@@ -64,37 +68,49 @@ public class TestProjectedGrid extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        cam.setLocation(new Vector3f(100, 50, 100));
-        cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
+        //cam.setLocation(new Vector3f(100, 50, 100));
+        //cam.lookAt(new Vector3f(0, 0, 0), Vector3f.UNIT_Y);
+        cam.setFrustumPerspective(45.0f, (float) settings.getWidth() / (float) settings.getHeight(), 1f, 2000f);
+        cam.setLocation(new Vector3f(0, 1, 0));
+        //cam.setRotation(new Quaternion().fromAngleNormalAxis(FastMath.DEG_TO_RAD * 180 , Vector3f.UNIT_Y));
         cam.update();
-        Box b = new Box(Vector3f.ZERO, 1, 1, 1); // create cube shape
-        t = new Triangle();
-        Geometry geom = new Geometry("Box", t);  // create cube geometry from the shape
-        Material mat = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-        mat.setColor("Color", ColorRGBA.Orange); // set color of material to blue
-        geom.setMaterial(mat);                   // set the cube's material
-        rootNode.attachChild(geom);              // make the cube appear in the scene
 
-        grid = new MyProjectedGrid(timer, cam, 100, 70, 0.01f, new WaterHeightGenerator());
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new MyHeightGenerator());
         projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
-
-        setSimpleWater();
-        //Material mat1 = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
-
-        //mat1.setColor("Color", ColorRGBA.White); // set color of material to blue
+/** A simple textured cube. Uses Texture from jme3-test-data library! */ 
+    Box boxshape1 = new Box(1f,1f,1f);     
+    Geometry cube = new Geometry("A Textured Box", boxshape1); 
+    cube.setLocalTranslation(0, 2, -10);
+    Material mat_stl = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); 
+    Texture tex_ml = assetManager.loadTexture("Interface/Logo/Monkey.jpg"); 
+    mat_stl.setTexture("ColorMap", tex_ml); 
+    tex_ml.setAnisotropicFilter(3);
+    cube.setMaterial(mat_stl); 
+    rootNode.attachChild(cube); 
+        //setSimpleWater();
+        //Material unshadedMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
+        //unshadedMat.setColor("Color", ColorRGBA.White); // set color of material to blue
         Material mat_tl = new Material(assetManager, "Common/MatDefs/Misc/ColoredTextured.j3md");
         Texture t = assetManager.loadTexture("Textures/BumpMapTest/Tangent.png");
         t.setWrap(Texture.WrapMode.Repeat);
-        t.setAnisotropicFilter(1);
+        projectedGridGeometry.setCullHint(CullHint.Never);
         mat_tl.setTexture("ColorMap", t);
         //mat_tl.setColor("Color", new ColorRGBA(1f,1f,1f, 1f)); // purple
         projectedGridGeometry.setMaterial(mat_tl);
-
+        projectedGridGeometry.setLocalTranslation(0, 0, 0);
 
 
 
         rootNode.attachChild(projectedGridGeometry);
+
+        inputManager.addMapping("fix", new KeyTrigger(KeyInput.KEY_F));
+        inputManager.addListener(new ActionListener() {
+
+            public void onAction(String name, boolean isPressed, float tpf) {
+                if(isPressed && "fix".equals(name))  grid.switchFreeze();
+            }
+        }, "fix");
+
 
         //projectedGridGeometry.setCullHint(CullHint.Never);
     }
@@ -102,8 +118,12 @@ public class TestProjectedGrid extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         //grid = // new MyProjectedGrid(timer, cam, 5, 5, 1.0f , new HeightGenerator());
+        float[] angles = new float[3];
+        cam.getRotation().toAngles(angles);
+        System.out.println("yaw angle:" + angles[1] * FastMath.RAD_TO_DEG);
+
         grid.update(cam.getViewMatrix().clone());
-        t.update();
+
     }
 
     private void setSimpleWater() {
@@ -121,7 +141,7 @@ public class TestProjectedGrid extends SimpleApplication {
 
 
 
-        //viewPort.addProcessor(fpp);
+        viewPort.addProcessor(fpp);
 
 
 
