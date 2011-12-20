@@ -1,3 +1,5 @@
+package jme3test.water.filter;
+
 ///*
 // * Copyright (c) 2003-2009 jMonkeyEngine
 // * All rights reserved.

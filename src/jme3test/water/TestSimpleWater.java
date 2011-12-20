@@ -56,6 +56,7 @@ import com.jme3.water.SimpleWaterProcessor;
 public class TestSimpleWater extends SimpleApplication implements ActionListener {
 
     Material mat;
+    MyProjectedGrid grid;
     Spatial waterPlane;
     Geometry lightSphere;
     SimpleWaterProcessor waterProcessor;
@@ -85,9 +86,13 @@ public class TestSimpleWater extends SimpleApplication implements ActionListener
         //create water quad
         //waterPlane = waterProcessor.createWaterGeometry(100, 100);
         waterPlane=(Spatial)  assetManager.loadAsset("Models/WaterTest/WaterTest.mesh.xml");
+        
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new WaterHeightGenerator());
+        waterPlane = new Geometry("Projected Grid", grid);
+        
         waterPlane.setMaterial(waterProcessor.getMaterial());
-        waterPlane.setLocalScale(40);
-        waterPlane.setLocalTranslation(-5, 0, 5);
+        //waterPlane.setLocalScale(40);
+        //waterPlane.setLocalTranslation(-5, 0, 5);
 
         rootNode.attachChild(waterPlane);
     }
@@ -138,6 +143,7 @@ public class TestSimpleWater extends SimpleApplication implements ActionListener
 
     @Override
     public void simpleUpdate(float tpf) {
+        grid.update(cam.getViewMatrix().clone());
         fpsText.setText("Light Position: "+lightPos.toString()+" Change Light position with [U], [H], [J], [K] and [T], [G] Turn off water with [O]");
         lightSphere.setLocalTranslation(lightPos);
         waterProcessor.setLightPosition(lightPos);

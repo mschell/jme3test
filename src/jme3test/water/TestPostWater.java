@@ -134,7 +134,7 @@ public class TestPostWater extends SimpleApplication {
 
 
         water.setWaveScale(0.003f);
-        water.setMaxAmplitude(2f);
+        water.setMaxAmplitude(0f);
         water.setFoamExistence(new Vector3f(1f, 4, 0.5f));
         water.setFoamTexture((Texture2D) assetManager.loadTexture("Common/MatDefs/Water/Textures/foam2.jpg"));
         //water.setNormalScale(0.5f);

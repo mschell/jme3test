@@ -8,11 +8,19 @@ uniform vec3 tangent;
 uniform vec3 binormal;
 uniform float normalTranslation, refractionTranslation;
 
+
+uniform mat4 g_WorldViewProjectionMatrix;
+uniform mat3 g_NormalMatrix;
+
+attribute vec3 inPosition;
+attribute vec2 inTexCoord;
+attribute vec3 inNormal;
+
 void main()
 {
 	// Because we have a flat plane for water we already know the vectors for tangent space
 //	vec3 normal = gl_Normal;
-	vec3 normal = gl_NormalMatrix * gl_Normal;
+	vec3 normal = gl_NormalMatrix * inNormal;
 	normal = normalize(normal);
 	vec3 tangent2 = gl_NormalMatrix * tangent;
 	tangent2 = normalize(tangent2);
@@ -21,7 +29,7 @@ void main()
 
 	// Calculate the vector coming from the vertex to the camera
 //	vec3 viewDir = cameraPos - gl_Vertex.xyz;
-	vec4 v = gl_ModelViewMatrix * gl_Vertex;
+	vec4 v = g_WorldViewMatrix * vec4(inPosition,1.0);
 	vec3 viewDir = -(v.xyz/v.w);
 	viewDir = normalize(viewDir);
 
@@ -30,10 +38,13 @@ void main()
 	viewTangetSpace.y = dot(viewDir, binormal2);
 	viewTangetSpace.z = dot(viewDir, normal);
 
-	refrCoords = (gl_TextureMatrix[2] * gl_MultiTexCoord0).xy + vec2(0.0,refractionTranslation);
-	normCoords = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy + vec2(0.0,normalTranslation);
+	refrCoords = (inTexCoord).xy + vec2(0.0,refractionTranslation);
+	normCoords = (inTexCoord).xy + vec2(0.0,normalTranslation);
 
+
+
+        vec4 pos = vec4(inPosition, 1.0);
+        gl_Position = g_WorldViewProjectionMatrix * pos;
 	// This calculates our current projection coordinates
-	viewCoords = gl_ModelViewProjectionMatrix * gl_Vertex;
-	gl_Position = viewCoords;
+	
 }

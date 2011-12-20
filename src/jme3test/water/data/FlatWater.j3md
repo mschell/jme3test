@@ -1,0 +1,28 @@
+MaterialDef FlatWater {
+
+    MaterialParameters {
+        Vector3 tangent;
+        Vector3 binormal;
+        Float normalTranslation;
+        Float refractionTranslation;
+        Texture2D normalMap;
+        Texture2D reflection;
+        Texture2D dudvMap;
+        Color waterColor;
+        Color waterColorEnd;
+        Boolean abovewater;
+        Boolean useFadeToFogColor;
+    }
+
+    Technique {
+        VertexShader GLSL100:   jme3test/water/data/flatwatershader.vert
+        FragmentShader GLSL100: jme3test/water/data/flatwatershader.frag
+
+        WorldParameters {
+            WorldViewProjectionMatrix;
+            WorldViewMatrix;
+            NormalMatrix
+        }
+    }
+
+}

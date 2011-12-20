@@ -55,7 +55,7 @@ public class WaterHeightGenerator implements HeightGenerator {
 	private float scalexbig = 0.015f;
 	private float scaleybig = 0.01f;
 	private float heightsmall = 3.0f;
-	private float heightbig = 10.0f;
+	private float heightbig = 1.0f;
 	private float speedsmall = 1.0f;
 	private float speedbig = 0.5f;
 	private int octaves = 2;
