@@ -10,6 +10,7 @@ MaterialDef FlatWater {
         Texture2D dudvMap;
         Color waterColor;
         Color waterColorEnd;
+        Color fogColor;
         Boolean abovewater;
         Boolean useFadeToFogColor;
     }

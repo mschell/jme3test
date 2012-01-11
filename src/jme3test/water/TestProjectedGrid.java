@@ -103,7 +103,7 @@ public class TestProjectedGrid extends SimpleApplication {
         projectedGridGeometry.setCullHint(CullHint.Never);
         //mat_tl.setTexture("DiffuseMap", t);
         //mat_tl.setColor("Color", new ColorRGBA(1f,1f,1f, 1f)); // purple
-        projectedGridGeometry.setMaterial(getSimpleWater());
+        projectedGridGeometry.setMaterial(getFlatWater());
         projectedGridGeometry.setLocalTranslation(0, 0, 0);
 
 
@@ -174,9 +174,11 @@ public class TestProjectedGrid extends SimpleApplication {
         flatWater.setFloat("normalTranslation", 0.1f);
         flatWater.setFloat("refractionTranslation", 0.1f);
         flatWater.setBoolean("abovewater",true);
-        flatWater.setBoolean("useFadeToFogColor",false);
-        flatWater.setColor("waterColor", new ColorRGBA( 0.0f, 0.0f, 0.1f, 1.0f ));
-        flatWater.setColor("waterColorEnd", new ColorRGBA( 0.0f, 0.3f, 0.1f, 1.0f ));
+        flatWater.setBoolean("useFadeToFogColor",true);
+        flatWater.setColor("waterColor", new ColorRGBA( 0.2f, 0.2f, 1.0f, 1.0f ));
+        flatWater.setColor("waterColorEnd", new ColorRGBA( 0.3f, 0.3f, 1.0f, 1.0f ));
+        flatWater.setColor("fogColor", new ColorRGBA( 1.0f, 1.0f, 1.0f, 0.1f ));
+        
         Texture2D dudv = (Texture2D) assetManager.loadTexture("jme3test/water/data/dudvmap.png");
         dudv.setWrap(Texture.WrapMode.Repeat);
         Texture2D normalMap = (Texture2D) assetManager.loadTexture("jme3test/water/data/normalmap3.dds");

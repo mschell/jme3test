@@ -4,11 +4,11 @@ varying vec4 viewCoords;
 varying vec3 viewTangetSpace;
 
 //uniform vec3 cameraPos;
-uniform vec3 tangent;
-uniform vec3 binormal;
-uniform float normalTranslation, refractionTranslation;
+uniform vec3 m_tangent;
+uniform vec3 m_binormal;
+uniform float m_normalTranslation, m_refractionTranslation;
 
-
+uniform mat4 g_WorldViewMatrix;
 uniform mat4 g_WorldViewProjectionMatrix;
 uniform mat3 g_NormalMatrix;
 
@@ -22,9 +22,9 @@ void main()
 //	vec3 normal = gl_Normal;
 	vec3 normal = gl_NormalMatrix * inNormal;
 	normal = normalize(normal);
-	vec3 tangent2 = gl_NormalMatrix * tangent;
+	vec3 tangent2 = gl_NormalMatrix * m_tangent;
 	tangent2 = normalize(tangent2);
-	vec3 binormal2 = gl_NormalMatrix * binormal;
+	vec3 binormal2 = gl_NormalMatrix * m_binormal;
 	binormal2 = normalize(binormal2);
 
 	// Calculate the vector coming from the vertex to the camera
@@ -38,8 +38,8 @@ void main()
 	viewTangetSpace.y = dot(viewDir, binormal2);
 	viewTangetSpace.z = dot(viewDir, normal);
 
-	refrCoords = (inTexCoord).xy + vec2(0.0,refractionTranslation);
-	normCoords = (inTexCoord).xy + vec2(0.0,normalTranslation);
+	refrCoords = (inTexCoord).xy + vec2(0.0,m_refractionTranslation);
+	normCoords = (inTexCoord).xy + vec2(0.0,m_normalTranslation);
 
 
 

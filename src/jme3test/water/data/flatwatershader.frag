@@ -3,14 +3,15 @@ varying vec2 normCoords;
 varying vec4 viewCoords;
 varying vec3 viewTangetSpace;
 
-uniform sampler2D normalMap;
-uniform sampler2D reflection;
-uniform sampler2D dudvMap;
+uniform sampler2D m_normalMap;
+uniform sampler2D m_reflection;
+uniform sampler2D m_dudvMap;
 
-uniform vec4 waterColor;
-uniform vec4 waterColorEnd;
-uniform bool abovewater;
-uniform bool useFadeToFogColor;
+uniform vec4 m_waterColor;
+uniform vec4 m_waterColorEnd;
+uniform bool m_abovewater;
+uniform bool m_useFadeToFogColor;
+uniform vec4 m_fogColor;
 //uniform float dudvPower; //0.005
 //uniform float dudvColorPower; //0.01
 //uniform float normalPower; //0.5
@@ -20,18 +21,18 @@ void main()
 {
 	float fogDist = clamp((viewCoords.z-1.0)*3,0.0,1.0);
 
-	vec2 distOffset = texture2D(dudvMap, refrCoords).xy * 0.01;
-	vec3 dudvColor = texture2D(dudvMap, normCoords + distOffset).xyz;
+	vec2 distOffset = texture2D(m_dudvMap, refrCoords).xy * 0.01;
+	vec3 dudvColor = texture2D(m_dudvMap, normCoords + distOffset).xyz;
 	dudvColor = normalize(dudvColor * 2.0 - 1.0) * 0.015;
 
-	vec3 normalVector = texture2D(normalMap, normCoords + distOffset * 0.6).xyz;
+	vec3 normalVector = texture2D(m_normalMap, normCoords + distOffset * 0.6).xyz;
 	normalVector = normalVector * 2.0 - 1.0;
 	normalVector = normalize(normalVector);
 	normalVector.xy *= 0.5;
 
 	vec3 localView = normalize(viewTangetSpace);
 	float fresnel = dot(normalVector, localView);
-	if ( abovewater == false ) {
+	if ( m_abovewater == false ) {
 		fresnel = -fresnel;
 	}
 	fresnel *= 1.0 - fogDist;
@@ -41,29 +42,33 @@ void main()
 
 	vec2 projCoord = viewCoords.xy / viewCoords.q;
 	projCoord = (projCoord + 1.0) * 0.5;
-	if ( abovewater == true ) {
+	if ( m_abovewater == true ) {
 		projCoord.x = 1.0 - projCoord.x;
 	}
-
-    projCoord += (dudvColor.xy * 0.5 + normalVector.xy * 0.2);
+ 
+        projCoord += (dudvColor.xy * 0.5 + normalVector.xy * 0.2);
 	projCoord = clamp(projCoord, 0.001, 0.999);
 
-	vec4 reflectionColor = texture2D(reflection, projCoord);
-	if ( abovewater == false ) {
+	vec4 reflectionColor = texture2D(m_reflection, projCoord);
+	if ( m_abovewater == false ) {
 		reflectionColor *= vec4(0.8,0.9,1.0,1.0);
-		vec4 endColor = mix(reflectionColor,waterColor,fresnelTerm);
-		gl_FragColor = mix(endColor,waterColor,fogDist);
+		vec4 endColor = mix(reflectionColor,m_waterColor,fresnelTerm);
+		gl_FragColor = mix(endColor,m_waterColor,fogDist);
 	}
 	else {
-		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);
+		vec4 waterColorNew = mix(m_waterColor,m_waterColorEnd,fresnelTerm);
 		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);
 		
-		if( useFadeToFogColor == false) {
+  
+
+                 if( m_useFadeToFogColor == false) {
 			gl_FragColor = mix(endColor,reflectionColor,fogDist);
 		} else {
-			gl_FragColor =   mix(endColor,reflectionColor,fogDist) * (1.0-fogDist) + gl_Fog.color * fogDist;
+			gl_FragColor =   mix(endColor,reflectionColor,fogDist) * (1.0-fogDist) + m_fogColor * fogDist;
 		}
 	}
-    
+        
+//gl_FragColor = mix(m_waterColorEnd,m_waterColor,fogDist);
+        
         
 }
