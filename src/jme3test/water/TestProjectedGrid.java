@@ -62,7 +62,7 @@ public class TestProjectedGrid extends SimpleApplication {
     Triangle t;
     Geometry lightSphere;
     Node sceneNode;
-    SimpleWaterProcessor waterProcessor;
+    MySimpleWaterProcessor waterProcessor;
     private Vector3f lightPos = new Vector3f(33, 12, -29);
 
     public static void main(String[] args) {
@@ -103,7 +103,7 @@ public class TestProjectedGrid extends SimpleApplication {
         projectedGridGeometry.setCullHint(CullHint.Never);
         //mat_tl.setTexture("DiffuseMap", t);
         //mat_tl.setColor("Color", new ColorRGBA(1f,1f,1f, 1f)); // purple
-        projectedGridGeometry.setMaterial(getFlatWater());
+        projectedGridGeometry.setMaterial(setFlatWaterProcessor());
         projectedGridGeometry.setLocalTranslation(0, 0, 0);
 
 
@@ -167,17 +167,29 @@ public class TestProjectedGrid extends SimpleApplication {
     }
     
     
+    private Material setFlatWaterProcessor(){
+        
+        waterProcessor = new MySimpleWaterProcessor(assetManager);
+        waterProcessor.setReflectionScene(sceneNode);
+        waterProcessor.setDebug(true);
+        viewPort.addProcessor(waterProcessor);
+
+                
+        return waterProcessor.getMaterial();
+    }
+    
+    
     private Material getFlatWater(){
         Material flatWater = new Material(assetManager, "jme3test/water/data/FlatWater.j3md");
-        flatWater.setVector3("binormal", new Vector3f(1.0f, 0.0f, 0.0f));
+        flatWater.setVector3("binormal", new Vector3f(0.3f, 0.3f, 0.0f));
         flatWater.setVector3("tangent", new Vector3f(0.0f, 1.0f, 0.0f));
         flatWater.setFloat("normalTranslation", 0.1f);
         flatWater.setFloat("refractionTranslation", 0.1f);
         flatWater.setBoolean("abovewater",true);
-        flatWater.setBoolean("useFadeToFogColor",true);
+        flatWater.setBoolean("useFadeToFogColor",false);
         flatWater.setColor("waterColor", new ColorRGBA( 0.2f, 0.2f, 1.0f, 1.0f ));
         flatWater.setColor("waterColorEnd", new ColorRGBA( 0.3f, 0.3f, 1.0f, 1.0f ));
-        flatWater.setColor("fogColor", new ColorRGBA( 1.0f, 1.0f, 1.0f, 0.1f ));
+        flatWater.setColor("fogColor", new ColorRGBA( 0.4f, 0.4f, 0.4f, 0.1f ));
         
         Texture2D dudv = (Texture2D) assetManager.loadTexture("jme3test/water/data/dudvmap.png");
         dudv.setWrap(Texture.WrapMode.Repeat);
@@ -207,14 +219,14 @@ public class TestProjectedGrid extends SimpleApplication {
     }
     
     
-    private Material setWaterProcessor(){
-        waterProcessor = new SimpleWaterProcessor(assetManager);
-        waterProcessor.setReflectionScene(sceneNode);
-        waterProcessor.setDebug(true);
-        viewPort.addProcessor(waterProcessor);        
-        waterProcessor.setLightPosition(lightPos);
-        
-        return waterProcessor.getMaterial();
-    
-    }
+//    private Material setWaterProcessor(){
+//        waterProcessor = new SimpleWaterProcessor(assetManager);
+//        waterProcessor.setReflectionScene(sceneNode);
+//        waterProcessor.setDebug(true);
+//        viewPort.addProcessor(waterProcessor);        
+//        waterProcessor.setLightPosition(lightPos);
+//        
+//        return waterProcessor.getMaterial();
+//    
+//    }
 }

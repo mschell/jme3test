@@ -44,7 +44,8 @@ void main()
 
 
         vec4 pos = vec4(inPosition, 1.0);
-        gl_Position = g_WorldViewProjectionMatrix * pos;
+        viewCoords = g_WorldViewProjectionMatrix * pos;
+        gl_Position = viewCoords;
 	// This calculates our current projection coordinates
 	
 }

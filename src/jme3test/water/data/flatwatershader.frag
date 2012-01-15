@@ -19,7 +19,7 @@ uniform vec4 m_fogColor;
 
 void main()
 {
-	float fogDist = clamp((viewCoords.z-1.0)*3,0.0,1.0);
+	float fogDist = clamp((viewCoords.z-1.0)*0.003,0.0,1.0);
 
 	vec2 distOffset = texture2D(m_dudvMap, refrCoords).xy * 0.01;
 	vec3 dudvColor = texture2D(m_dudvMap, normCoords + distOffset).xyz;
@@ -64,7 +64,7 @@ void main()
                  if( m_useFadeToFogColor == false) {
 			gl_FragColor = mix(endColor,reflectionColor,fogDist);
 		} else {
-			gl_FragColor =   mix(endColor,reflectionColor,fogDist) * (1.0-fogDist) + m_fogColor * fogDist;
+			gl_FragColor = mix(endColor,reflectionColor,fogDist) * (1.0-fogDist) +  m_fogColor * fogDist;
 		}
 	}
         
