@@ -20,11 +20,11 @@ void main()
 {
 	// Because we have a flat plane for water we already know the vectors for tangent space
 //	vec3 normal = gl_Normal;
-	vec3 normal = gl_NormalMatrix * inNormal;
+	vec3 normal = g_NormalMatrix * inNormal;
 	normal = normalize(normal);
-	vec3 tangent2 = gl_NormalMatrix * m_tangent;
+	vec3 tangent2 = g_NormalMatrix * m_tangent;
 	tangent2 = normalize(tangent2);
-	vec3 binormal2 = gl_NormalMatrix * m_binormal;
+	vec3 binormal2 = g_NormalMatrix * m_binormal;
 	binormal2 = normalize(binormal2);
 
 	// Calculate the vector coming from the vertex to the camera
