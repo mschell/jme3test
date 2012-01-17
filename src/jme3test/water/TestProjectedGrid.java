@@ -79,7 +79,7 @@ public class TestProjectedGrid extends SimpleApplication {
         //cam.setRotation(new Quaternion().fromAngleNormalAxis(FastMath.DEG_TO_RAD * 180 , Vector3f.UNIT_Y));
         cam.update();
 
-        grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new WaterHeightGenerator());
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new MyHeightGenerator());
         projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
 
         /** A simple textured cube. Uses Texture from jme3-test-data library! */
@@ -91,8 +91,9 @@ public class TestProjectedGrid extends SimpleApplication {
         mat_stl.setTexture("DiffuseMap", tex_ml);
         tex_ml.setAnisotropicFilter(3);
         cube.setMaterial(mat_stl);
-        rootNode.attachChild(cube);
+        
         addSkybox();
+        sceneNode.attachChild(cube);
         //Material unshadedMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); // create a simple material
         //unshadedMat.setColor("Color", ColorRGBA.White); // set color of material to blue
 
@@ -142,7 +143,7 @@ public class TestProjectedGrid extends SimpleApplication {
         //grid = // new MyProjectedGrid(timer, cam, 5, 5, 1.0f , new HeightGenerator());
         float[] angles = new float[3];
         cam.getRotation().toAngles(angles);
-        System.out.println("yaw angle:" + angles[1] * FastMath.RAD_TO_DEG);
+        //System.out.println("yaw angle:" + angles[1] * FastMath.RAD_TO_DEG);
 
         grid.update(cam.getViewMatrix().clone());
 

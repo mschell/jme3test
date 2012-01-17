@@ -74,7 +74,7 @@ public class MySimpleWaterProcessor implements SceneProcessor {
         material.setFloat("normalTranslation", 0.0f);
         material.setFloat("refractionTranslation", 0.0f);
         material.setBoolean("abovewater", true);
-        material.setBoolean("useFadeToFogColor", true);
+        material.setBoolean("useFadeToFogColor", false);
         material.setColor("waterColor", new ColorRGBA( 0.0f, 0.0f, 0.1f, 1.0f ));
         material.setColor("waterColorEnd", new ColorRGBA( 0.0f, 0.3f, 0.1f, 1.0f ));
         material.setColor("fogColor", new ColorRGBA(1.0f, 1.0f, 1.0f, 0.1f));
@@ -155,7 +155,8 @@ public class MySimpleWaterProcessor implements SceneProcessor {
         if (time > 1f) {
             time = 0;
         }
-//        material.setFloat("time", time);
+        float speedReflection = 1f;
+        material.setFloat("normalTranslation", speedReflection * time);
         savedTpf = tpf;
     }
 

@@ -42,8 +42,9 @@ void main()
 
 	vec2 projCoord = viewCoords.xy / viewCoords.q;
 	projCoord = (projCoord + 1.0) * 0.5;
-	if ( m_abovewater == true ) {
-		projCoord.x = 1.0 - projCoord.x;
+       	if ( m_abovewater == true ) {
+	//	projCoord.x = 1.0 - projCoord.x;
+		projCoord.y = 1.0 - projCoord.y;
 	}
  
         projCoord += (dudvColor.xy * 0.5 + normalVector.xy * 0.2);

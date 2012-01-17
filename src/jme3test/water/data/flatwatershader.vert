@@ -41,8 +41,6 @@ void main()
 	refrCoords = (inTexCoord).xy + vec2(0.0,m_refractionTranslation);
 	normCoords = (inTexCoord).xy + vec2(0.0,m_normalTranslation);
 
-
-
         vec4 pos = vec4(inPosition, 1.0);
         viewCoords = g_WorldViewProjectionMatrix * pos;
         gl_Position = viewCoords;

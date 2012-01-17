@@ -236,7 +236,7 @@ public class MyProjectedGrid extends Mesh {
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopRight);
         source.set(1, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomRight);
-        System.out.println("intersectBottomRight : " + intersectBottomRight.toString());
+        //System.out.println("intersectBottomRight : " + intersectBottomRight.toString());
 
         vertBuf.rewind();
         float du = 1.0f / (float) (sizeX - 1);
