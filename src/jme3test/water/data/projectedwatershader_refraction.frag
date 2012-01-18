@@ -6,18 +6,22 @@ varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
 
-uniform sampler2D normalMap;
-uniform sampler2D reflection;
-uniform sampler2D dudvMap;
-uniform sampler2D refraction;
-uniform sampler2D depthMap;
-uniform sampler2D foamMap;
+uniform sampler2D m_normalMap;
+uniform sampler2D m_reflection;
+uniform sampler2D m_dudvMap;
+uniform sampler2D m_refraction;
+uniform sampler2D m_depthMap;
+uniform sampler2D m_foamMap;
 
-uniform vec4 waterColor;
-uniform vec4 waterColorEnd;
-uniform bool abovewater;
-uniform bool useFadeToFogColor;
-uniform float amplitude;
+uniform vec4 m_waterColor;
+uniform vec4 m_waterColorEnd;
+uniform bool m_abovewater;
+uniform bool m_useFadeToFogColor;
+uniform float m_amplitude;
+uniform vec4 m_fogColor;
+
+uniform float m_fogStart;
+uniform float m_fogScale;
 //uniform float dudvPower; //0.005
 //uniform float dudvColorPower; //0.01
 //uniform float normalPower; //0.5
@@ -25,13 +29,13 @@ uniform float amplitude;
 
 void main()
 {
-	float fogDist = clamp((viewCoords.z-gl_Fog.start)*gl_Fog.scale,0.0,1.0);
+	float fogDist = clamp((viewCoords.z-m_fogStart)*m_fogScale,0.0,1.0);
 
-	vec2 distOffset = texture2D(dudvMap, refrCoords).xy * 0.01;
-	vec3 dudvColor = texture2D(dudvMap, normCoords + distOffset).xyz;
+	vec2 distOffset = texture2D(m_dudvMap, refrCoords).xy * 0.01;
+	vec3 dudvColor = texture2D(m_dudvMap, normCoords + distOffset).xyz;
 	dudvColor = normalize(dudvColor * 2.0 - 1.0) * 0.015;
 
-	vec3 normalVector = texture2D(normalMap, normCoords + distOffset * 0.6).xyz;
+	vec3 normalVector = texture2D(m_normalMap, normCoords + distOffset * 0.6).xyz;
 	normalVector = normalVector * 2.0 - 1.0;
 	normalVector = normalize(normalVector);
 	normalVector.xy *= 0.5;
