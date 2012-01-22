@@ -69,8 +69,8 @@ public class FlatWaterProcessor implements SceneProcessor {
     public FlatWaterProcessor(AssetManager manager) {
         this.manager = manager;
         material = new Material(manager, "jme3test/water/data/FlatWater.j3md");
-        material.setVector3("binormal", new Vector3f(0.0f, 0.0f, 1.0f));
-        material.setVector3("tangent", new Vector3f(0.0f, 1.0f, 0.0f));
+        material.setVector3("binormal", new Vector3f(0.0f, 0.0f, -1.0f));
+        material.setVector3("tangent", new Vector3f(1.0f, 0.0f, 0.0f));
         material.setFloat("normalTranslation", 0.0f);
         material.setFloat("refractionTranslation", 0.0f);
         material.setBoolean("abovewater", true);
