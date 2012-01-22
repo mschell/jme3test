@@ -19,7 +19,7 @@ uniform vec4 m_fogColor;
 
 void main()
 {
-	float fogDist = clamp((viewCoords.z-1.0)*0.1,0.0,1.0);
+	float fogDist = clamp((viewCoords.z-1.0)*0.01,0.0,1.0);
 
 	vec2 distOffset = texture2D(m_dudvMap, refrCoords).xy * 0.01;
 	vec3 dudvColor = texture2D(m_dudvMap, normCoords + distOffset).xyz;
