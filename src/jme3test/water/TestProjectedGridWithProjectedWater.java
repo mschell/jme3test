@@ -113,7 +113,7 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         sun.setColor(ColorRGBA.White);
         rootNode.addLight(sun);
         
-        flyCam.setMoveSpeed(50f);
+        flyCam.setMoveSpeed(5f);
         
     }
 

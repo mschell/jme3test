@@ -105,7 +105,7 @@ public class ProjectedWaterProcessor implements SceneProcessor {
     }
 
     protected void loadTextures(AssetManager manager) {
-        normalTexture = (Texture2D) manager.loadTexture("jme3test/water/data/normalmap3.dds");
+        normalTexture = (Texture2D) manager.loadTexture("jme3test/water/data/water_normalmap.dds");
         dudvTexture = (Texture2D) manager.loadTexture("jme3test/water/data/dudvmap.png");
         foamTexture = (Texture2D) manager.loadTexture("jme3test/water/data/oceanfoam.png");
         
