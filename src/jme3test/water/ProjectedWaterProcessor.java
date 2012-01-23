@@ -37,6 +37,7 @@ public class ProjectedWaterProcessor implements SceneProcessor {
     protected ViewPort refractionView;
     protected FrameBuffer reflectionBuffer;
     protected FrameBuffer refractionBuffer;
+    protected Camera mainCamera;
     protected Camera reflectionCam;
     protected Camera refractionCam;
     protected Texture2D reflectionTexture;
@@ -67,11 +68,12 @@ public class ProjectedWaterProcessor implements SceneProcessor {
     private Vector3f vect2 = new Vector3f();
     private Vector3f vect3 = new Vector3f();
 
-    public ProjectedWaterProcessor(AssetManager manager) {
+    public ProjectedWaterProcessor(Camera cam,AssetManager manager) {
         this.manager = manager;
+        mainCamera = cam;
         material = new Material(manager, "jme3test/water/data/ProjectedWater.j3md");
-        material.setVector3("binormal", new Vector3f(0.0f, 0.0f, 1.0f));
-        material.setVector3("tangent", new Vector3f(0.0f, 1.0f, 0.0f));
+        material.setVector3("binormal", new Vector3f(0.0f, 0.0f, -1.0f));
+        material.setVector3("tangent", new Vector3f(1.0f, 0.0f, 0.0f));
         material.setFloat("normalTranslation", 0.0f);
         material.setFloat("refractionTranslation", 0.0f);
         material.setBoolean("abovewater", true);
@@ -109,15 +111,17 @@ public class ProjectedWaterProcessor implements SceneProcessor {
         dudvTexture = (Texture2D) manager.loadTexture("jme3test/water/data/dudvmap.png");
         foamTexture = (Texture2D) manager.loadTexture("jme3test/water/data/oceanfoam.png");
         
+        
+        
         normalTexture.setWrap(Texture.WrapMode.Repeat);
         dudvTexture.setWrap(Texture.WrapMode.Repeat);
+        foamTexture.setWrap(Texture.WrapMode.Repeat);
     }
 
     protected void createTextures() {
         reflectionTexture = new Texture2D(renderWidth, renderHeight, Format.RGBA8);
         refractionTexture = new Texture2D(renderWidth, renderHeight, Format.RGBA8);
         reflectionTexture.setWrap(Texture.WrapMode.Repeat);
-        foamTexture = new Texture2D(renderWidth, renderHeight, Format.RGBA8);
         depthTexture = new Texture2D(renderWidth, renderHeight, Format.Depth);
     }
 
@@ -166,11 +170,8 @@ public class ProjectedWaterProcessor implements SceneProcessor {
         }
         float speedReflection = 1f;
         material.setFloat("normalTranslation", speedReflection * time);
+        material.setVector3("cameraPos", mainCamera.getLocation());
         
-        
-        if(rm.getCurrentCamera() != null){
-                material.setVector3("cameraPos", rm.getCurrentCamera().getLocation());
-        }
         savedTpf = tpf;
     }
 

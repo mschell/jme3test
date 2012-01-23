@@ -5,6 +5,7 @@ varying vec4 viewCoords;
 varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
+varying vec3 viewDir;
 
 uniform vec3 m_cameraPos;
 uniform vec3 m_tangent;
@@ -34,11 +35,12 @@ void main()
 	vVertex.w = m_waterHeight;
 
 	
-	vec3 normal = vec3(inNormal.x*heightAdjust,inNormal.y,inNormal.z*heightAdjust);
+	vec3 normal =   vec3(inNormal.x*heightAdjust,inNormal.y,inNormal.z*heightAdjust);
 	vnormal = normal.xz * 0.15;
 
 	// Calculate the vector coming from the vertex to the camera
-	vec3 viewDir = m_cameraPos - inPosition;
+	viewDir = m_cameraPos - inPosition;
+        
 
 	// Compute tangent space for the view direction
 	viewTangetSpace.x = dot(viewDir, m_tangent);
