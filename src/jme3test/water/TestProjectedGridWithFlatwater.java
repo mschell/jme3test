@@ -120,7 +120,7 @@ public class TestProjectedGridWithFlatwater extends SimpleApplication {
         
         quad.setMaterial(waterProcessor.getMaterial());
         quad.setCullHint(CullHint.Never);
-        rootNode.attachChild(quad);
+        //rootNode.attachChild(quad);
     }
     
     
@@ -130,7 +130,7 @@ public class TestProjectedGridWithFlatwater extends SimpleApplication {
         projectedGridGeometry.setCullHint(CullHint.Never);
         projectedGridGeometry.setMaterial(setFlatWaterProcessor());
         projectedGridGeometry.setLocalTranslation(0, 0, 0);
-        //rootNode.attachChild(projectedGridGeometry);
+        rootNode.attachChild(projectedGridGeometry);
     }
 
     @Override

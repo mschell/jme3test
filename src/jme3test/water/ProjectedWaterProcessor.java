@@ -74,15 +74,15 @@ public class ProjectedWaterProcessor implements SceneProcessor {
         material = new Material(manager, "jme3test/water/data/ProjectedWater.j3md");
         material.setVector3("binormal", new Vector3f(0.0f, 0.0f, -1.0f));
         material.setVector3("tangent", new Vector3f(1.0f, 0.0f, 0.0f));
-        material.setFloat("normalTranslation", 0.0f);
-        material.setFloat("refractionTranslation", 0.0f);
+        material.setFloat("normalTranslation", 2f);
+        material.setFloat("refractionTranslation", 2f);
         material.setBoolean("abovewater", true);
         material.setBoolean("useFadeToFogColor", false);
         material.setColor("waterColor", new ColorRGBA( 0.0f, 0.0f, 0.1f, 1.0f ));
         material.setColor("waterColorEnd", new ColorRGBA( 0.0f, 0.3f, 0.1f, 1.0f ));
         material.setColor("fogColor", new ColorRGBA(1.0f, 1.0f, 1.0f, 0.1f));
         material.setFloat("fogStart", 1.0f);
-        material.setFloat("fogScale", 0.01f);
+        material.setFloat("fogScale", 0.001f);
         material.setFloat("amplitude", 1.0f);
         material.setFloat("heightFalloffStart", 300.0f);
         material.setFloat("heightFalloffSpeed", 500.0f);
@@ -107,13 +107,13 @@ public class ProjectedWaterProcessor implements SceneProcessor {
     }
 
     protected void loadTextures(AssetManager manager) {
-        normalTexture = (Texture2D) manager.loadTexture("jme3test/water/data/water_normalmap.dds");
+        normalTexture = (Texture2D) manager.loadTexture("jme3test/water/data/normalmap3.dds");
         dudvTexture = (Texture2D) manager.loadTexture("jme3test/water/data/dudvmap.png");
         foamTexture = (Texture2D) manager.loadTexture("jme3test/water/data/oceanfoam.png");
         
         
         
-        normalTexture.setWrap(Texture.WrapMode.Repeat);
+        normalTexture.setWrap(Texture.WrapMode.MirroredRepeat);
         dudvTexture.setWrap(Texture.WrapMode.Repeat);
         foamTexture.setWrap(Texture.WrapMode.Repeat);
     }

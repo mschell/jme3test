@@ -76,7 +76,7 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         cam.setLocation(new Vector3f(0, 1, 0));
         cam.update();
 
-        grid = new MyProjectedGrid(timer, cam, 100, 70, 2f, new WaterHeightGenerator());
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 0.02f, new WaterHeightGenerator());
         projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
 
         /** A simple textured cube. Uses Texture from jme3-test-data library! */
