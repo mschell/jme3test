@@ -2,6 +2,8 @@ varying vec2 refrCoords;
 varying vec2 normCoords;
 varying vec2 foamCoords;
 varying vec4 viewCoords;
+varying vec4 invViewCoords;
+
 varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
@@ -49,8 +51,9 @@ void main()
         fresnelTerm *= fresnelTerm;
 	fresnelTerm = fresnelTerm * 0.9 + 0.1;
         
+        
 
-	vec2 projCoord = viewCoords.xy / viewCoords.q;
+	vec2 projCoord = invViewCoords.xy / (invViewCoords.q );
 	projCoord = (projCoord + 1.0) * 0.5;
 	if ( m_abovewater == true ) {
 		projCoord.y = 1.0 - projCoord.y;

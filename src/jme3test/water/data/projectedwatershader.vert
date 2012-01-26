@@ -2,6 +2,7 @@ varying vec2 refrCoords;
 varying vec2 normCoords;
 varying vec2 foamCoords;
 varying vec4 viewCoords;
+varying vec4 invViewCoords;
 varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
@@ -29,9 +30,12 @@ void main()
 	viewCoords = g_WorldViewProjectionMatrix * vVertex;
 	
 	float heightAdjust = 1.0 - clamp((viewCoords.z-m_heightFalloffStart)/m_heightFalloffSpeed,0.0,1.0);
-	vVertex.y = mix(m_waterHeight,vVertex.y,heightAdjust);
+	//vVertex.y =  mix(m_waterHeight,vVertex.y,heightAdjust);
 	viewCoords = g_WorldViewProjectionMatrix * vVertex;
 	gl_Position = viewCoords;
+        vVertex.y = -vVertex.y;
+        invViewCoords = g_WorldViewProjectionMatrix * vVertex;
+        vVertex.y = -vVertex.y;
 	vVertex.w = m_waterHeight;
 
 	
