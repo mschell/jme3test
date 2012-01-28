@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2010 jMonkeyEngine
+ * Copyright (c) 2009-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
     Triangle t;
     Geometry lightSphere;
     Node sceneNode;
-    ProjectedWaterProcessor waterProcessor;
+    ProjectedWaterProcessorWithRefraction waterProcessor;
     private Vector3f lightPos = new Vector3f(33, 12, -29);
 
     public static void main(String[] args) {
@@ -76,9 +76,10 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         cam.setLocation(new Vector3f(0, 1, 0));
         cam.update();
 
-        grid = new MyProjectedGrid(timer, cam, 100, 70, 0.02f, new WaterHeightGenerator());
-        projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
 
+        
+        addSkybox();
+        
         /** A simple textured cube. Uses Texture from jme3-test-data library! */
         Box boxshape1 = new Box(1f, 1f, 1f);
         Geometry cube = new Geometry("A Textured Box", boxshape1);
@@ -87,15 +88,22 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         Texture tex_ml = assetManager.loadTexture("Interface/Logo/Monkey.jpg");
         mat_stl.setTexture("DiffuseMap", tex_ml);
         tex_ml.setAnisotropicFilter(3);
-        cube.setMaterial(mat_stl);        
-        addSkybox();
+        cube.setMaterial(mat_stl);                        
         sceneNode.attachChild(cube);
                
+        /** A simple textured cube. Uses Texture from jme3-test-data library! */
+        Box boxshape2 = new Box(30f, 3f, 60f);
+        Geometry cube2 = new Geometry("A Textured Box", boxshape2);
+        cube2.setLocalTranslation(0, -4, -1);
+        cube2.setMaterial(mat_stl);                        
+        sceneNode.attachChild(cube2);
         
+        grid = new MyProjectedGrid(timer, cam, 100, 70, 0.02f, new WaterHeightGenerator());
+        projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
         projectedGridGeometry.setCullHint(CullHint.Never);
         projectedGridGeometry.setMaterial(setWaterProcessor());
         projectedGridGeometry.setLocalTranslation(0, 0, 0);
-       rootNode.attachChild(projectedGridGeometry);
+        rootNode.attachChild(projectedGridGeometry);
 
         inputManager.addMapping("fix", new KeyTrigger(KeyInput.KEY_F));
         inputManager.addListener(new ActionListener() {
@@ -145,7 +153,7 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
     
     private Material setWaterProcessor(){
         
-        waterProcessor = new ProjectedWaterProcessor(cam,assetManager);
+        waterProcessor = new ProjectedWaterProcessorWithRefraction(cam,assetManager);
         waterProcessor.setReflectionScene(sceneNode);
         waterProcessor.setDebug(false);
         viewPort.addProcessor(waterProcessor);              

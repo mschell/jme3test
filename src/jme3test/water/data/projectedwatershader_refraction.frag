@@ -2,9 +2,12 @@ varying vec2 refrCoords;
 varying vec2 normCoords;
 varying vec2 foamCoords;
 varying vec4 viewCoords;
+varying vec4 invViewCoords;
+
 varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
+varying vec3 viewDir;
 
 uniform sampler2D m_normalMap;
 uniform sampler2D m_reflection;
@@ -47,46 +50,47 @@ void main()
 	fresnelTerm *= fresnelTerm;
 	fresnelTerm *= fresnelTerm;
 	fresnelTerm = fresnelTerm * 0.9 + 0.1;
-	fresnel = 1.0 - fresnelTerm;
 
-	vec2 projCoord = viewCoords.xy / viewCoords.q;
+	vec2 projCoord = invViewCoords.xy / (invViewCoords.q );
 	projCoord = (projCoord + 1.0) * 0.5;
-	vec2 projCoordDepth = projCoord;
-	if ( abovewater == true ) {
-		projCoord.x = 1.0 - projCoord.x;
+	vec2 projCoordDepth = viewCoords.xy / (viewCoords.q );
+        projCoordDepth = (projCoordDepth + 1.0) * 0.5;
+	if ( m_abovewater == true ) {
+		projCoord.y = 1.0 - projCoord.y;
 	}
 
-    projCoord += (vnormal + dudvColor.xy * 0.5 + normalVector.xy * 0.2);
+        projCoord += (vnormal + dudvColor.xy * 0.5 + normalVector.xy * 0.2);
 	projCoord = clamp(projCoord, 0.001, 0.999);
 
-    projCoordDepth += (vnormal + dudvColor.xy * 0.5 + normalVector.xy * 0.2);
+        projCoordDepth += (vnormal + dudvColor.xy * 0.5 + normalVector.xy * 0.2);
 	projCoordDepth = clamp(projCoordDepth, 0.001, 0.999);
 
-	vec4 reflectionColor = texture2D(reflection, projCoord);
-	if ( abovewater == false ) {
+	vec4 reflectionColor = texture2D(m_reflection, projCoord);
+	if ( m_abovewater == false ) {
 		reflectionColor *= vec4(0.8,0.9,1.0,1.0);
-		vec4 endColor = mix(reflectionColor,waterColor,fresnelTerm);
-		gl_FragColor = mix(endColor,waterColor,fogDist);
+		vec4 endColor = mix(reflectionColor,m_waterColor,fresnelTerm);
+		gl_FragColor = mix(endColor,m_waterColor,fogDist);
 	}
 	else {
-		vec4 waterColorNew = mix(waterColor,waterColorEnd,fresnelTerm);
+		vec4 waterColorNew = mix(m_waterColor,m_waterColorEnd,fresnelTerm);
 		vec4 endColor = mix(waterColorNew,reflectionColor,fresnelTerm);
 	
-		float foamVal = (vVertex.y-vVertex.w) / (amplitude * 2.0);
+
+		float foamVal = (vVertex.y-vVertex.w) / (m_amplitude * 2.0);
 		foamVal = clamp(foamVal,0.0,1.0);
-		vec4 foamTex = texture2D(foamMap, foamCoords + vnormal * 0.6 + normalVector.xy * 0.05);
+		vec4 foamTex = texture2D(m_foamMap, foamCoords + vnormal * 0.6 + normalVector.xy * 0.05 );
 		float normLength = length(vnormal*5.0);
 		foamVal *= 1.0-normLength;
 		foamVal *= foamTex.a;
 		endColor = mix(endColor,foamTex,clamp(foamVal,0.0,0.95));
 	
-		vec4 refractionColor = texture2D(refraction, projCoordDepth);
-		float depth = texture2D(depthMap, projCoordDepth).r;
+		vec4 refractionColor = texture2D(m_refraction, projCoordDepth);
+		float depth = texture2D(m_depthMap, projCoordDepth).r;
 		depth = pow(depth,15.0);
 		float invDepth = 1.0-depth;
 	
 		endColor = refractionColor*vec4(invDepth*fresnel) + endColor*vec4(depth*fresnel);
-		if( useFadeToFogColor == false) {
+		if( m_useFadeToFogColor == false) {
 			gl_FragColor = endColor + reflectionColor * vec4(fresnelTerm);
 		} else {
 			gl_FragColor = (endColor + reflectionColor * vec4(fresnelTerm)) * (1.0-fogDist) + gl_Fog.color * fogDist;

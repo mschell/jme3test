@@ -2,42 +2,57 @@ varying vec2 refrCoords;
 varying vec2 normCoords;
 varying vec2 foamCoords;
 varying vec4 viewCoords;
+varying vec4 invViewCoords;
 varying vec3 viewTangetSpace;
 varying vec2 vnormal;
 varying vec4 vVertex;
+varying vec3 viewDir;
 
-uniform vec3 cameraPos;
-uniform vec3 tangent;
-uniform vec3 binormal;
-uniform float normalTranslation, refractionTranslation;
-uniform float waterHeight;
-uniform float heightFalloffStart;
-uniform float heightFalloffSpeed;
+uniform vec3 m_cameraPos;
+uniform vec3 m_tangent;
+uniform vec3 m_binormal;
+uniform float m_normalTranslation, m_refractionTranslation;
+uniform float m_waterHeight;
+uniform float m_heightFalloffStart;
+uniform float m_heightFalloffSpeed;
+
+uniform mat4 g_WorldViewMatrix;
+uniform mat4 g_WorldViewProjectionMatrix;
+uniform mat3 g_NormalMatrix;
+
+attribute vec3 inPosition;
+attribute vec2 inTexCoord;
+attribute vec3 inNormal;
 
 void main()
 {
-	viewCoords = gl_ModelViewProjectionMatrix * gl_Vertex;
-	vVertex = gl_Vertex;
-	float heightAdjust = 1.0 - clamp((viewCoords.z-heightFalloffStart)/heightFalloffSpeed,0.0,1.0);
-	vVertex.y = mix(waterHeight,vVertex.y,heightAdjust);
-	viewCoords = gl_ModelViewProjectionMatrix * vVertex;
+        vVertex = vec4(inPosition, 1.0);
+	viewCoords = g_WorldViewProjectionMatrix * vVertex;
+	
+	float heightAdjust = 1.0 - clamp((viewCoords.z-m_heightFalloffStart)/m_heightFalloffSpeed,0.0,1.0);
+	//vVertex.y =  mix(m_waterHeight,vVertex.y,heightAdjust);
+	viewCoords = g_WorldViewProjectionMatrix * vVertex;
 	gl_Position = viewCoords;
-	vVertex.w = waterHeight;
+        vVertex.y = -vVertex.y;
+        invViewCoords = g_WorldViewProjectionMatrix * vVertex;
+        vVertex.y = -vVertex.y;
+	vVertex.w = m_waterHeight;
 
-	// Because we have a flat plane for water we already know the vectors for tangent space
-	vec3 normal = vec3(gl_Normal.x*heightAdjust,gl_Normal.y,gl_Normal.z*heightAdjust);
+	
+	vec3 normal =   vec3(inNormal.x*heightAdjust,inNormal.y,inNormal.z*heightAdjust);
 	vnormal = normal.xz * 0.15;
 
 	// Calculate the vector coming from the vertex to the camera
-	vec3 viewDir = cameraPos - gl_Vertex.xyz;
+	viewDir = m_cameraPos - inPosition;
+
 
 	// Compute tangent space for the view direction
-	viewTangetSpace.x = dot(viewDir, tangent);
-	viewTangetSpace.y = dot(viewDir, binormal);
+	viewTangetSpace.x = dot(viewDir, m_tangent);
+	viewTangetSpace.y = dot(viewDir, m_binormal);
 	viewTangetSpace.z = dot(viewDir, normal);
 
 	//todo test 0.8
-	refrCoords = (gl_TextureMatrix[2] * gl_MultiTexCoord0).xy + vec2(0.0,refractionTranslation);
-	normCoords = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy + vec2(0.0,normalTranslation);
-	foamCoords = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy + vec2(0.0,normalTranslation*0.4);
+	refrCoords = (inTexCoord).xy + vec2(0.0,m_refractionTranslation);
+	normCoords = (inTexCoord).xy + vec2(0.0,m_normalTranslation);
+	foamCoords = (inTexCoord).xy + vec2(0.0,m_normalTranslation*0.4);
 }

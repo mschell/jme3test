@@ -52,15 +52,14 @@ import javax.vecmath.TexCoord2f;
  * Projected grid mesh
  *
  * @author Rikard Herlitz (MrCoder)
- * @author Matthias Schellhase 
- * ported to jme3
+ * @author Matthias Schellhase port to jme3
  */
 public class MyProjectedGrid extends Mesh {
 
     private static final long serialVersionUID = 1L;
     private int sizeX;
     private int sizeY;
-    //x/z step
+
     private static Vector3f calcVec1 = new Vector3f();
     private static Vector3f calcVec2 = new Vector3f();
     private static Vector3f calcVec3 = new Vector3f();
@@ -70,10 +69,7 @@ public class MyProjectedGrid extends Mesh {
     private IntBuffer indexBuffer;
     private float viewPortWidth = 0;
     private float viewPortHeight = 0;
-    private float viewPortLeft = 0;
-    private float viewPortBottom = 0;
     private Vector2f source = new Vector2f();
-    private Matrix4f modelViewMatrix = new Matrix4f();
     private Matrix4f projectionMatrix = new Matrix4f();
     private Matrix4f modelViewProjectionInverse = new Matrix4f();
     private Vector4f intersectBottomLeft = new Vector4f();
@@ -121,8 +117,6 @@ public class MyProjectedGrid extends Mesh {
 
         this.timer = timer;
 
-        //setVertexCount( sizeX * sizeY );
-
         vertBufArray = new float[sizeX * sizeY * 3];
         normBufArray = new float[sizeX * sizeY * 3];
         texBufArray = new float[sizeX * sizeY * 2];
@@ -136,9 +130,6 @@ public class MyProjectedGrid extends Mesh {
         freezeProjector = !freezeProjector;
     }
 
-    //public void draw( Renderer r ) {
-    //update();
-    //}
     public float getTextureScale() {
         return textureScale;
     }
@@ -163,33 +154,18 @@ public class MyProjectedGrid extends Mesh {
         ProjectedTextureUtil.camera = camera.clone();
         viewPortWidth = camera.getWidth();
         viewPortHeight = camera.getHeight();
-        viewPortLeft = camera.getViewPortLeft();
-        viewPortBottom = camera.getViewPortBottom();
-
-        //System.out.println(camera.getViewMatrix().toString());
-
 
         modelViewMatrix.set(camera.getViewMatrix().clone());
         modelViewMatrix.transposeLocal();
 
-        //  System.out.print("modelViewMatrix:" +  modelViewMatrix.toString());
         projectionMatrix.set(camera.getProjectionMatrix().clone());
         projectionMatrix.transposeLocal();
-        // System.out.print("projectionMatrix:" +  projectionMatrix.toString());
-
 
         modelViewProjectionInverse.set(modelViewMatrix).multLocal(projectionMatrix);
-
-        // System.out.print("modelViewProjectionInverse A :" +  modelViewProjectionInverse.toString());
-
         modelViewProjectionInverse.invertLocal();
-
-        // System.out.print("modelViewProjectionInverse B :" +  modelViewProjectionInverse.toString());
 
         source.set(0.5f, 0.5f);
         getWorldIntersection(height, source, modelViewProjectionInverse, pointFinal);
-
-        // System.out.println("pointFinal :" +  pointFinal.toString());
 
         pointFinal.multLocal(1.0f / pointFinal.getW());
         realPoint.set(pointFinal.getX(), pointFinal.getY(), pointFinal.getZ());
@@ -205,21 +181,14 @@ public class MyProjectedGrid extends Mesh {
             rangeMatrix = getMinMax(fakeLoc, fakePoint, cam);
         }
 
-
         ProjectedTextureUtil.matrixLookAt(projectorLoc, realPoint, Vector3f.UNIT_Y, modelViewMatrix);
         modelViewMatrix.transposeLocal();
-//        System.out.print("modelViewMatrix 2:" +  modelViewMatrix.toString());
-
 
         ProjectedTextureUtil.matrixProjection(fovY + 10.0f, viewPortWidth / viewPortHeight, cam.getFrustumNear(), cam.getFrustumFar(), projectionMatrix);
         projectionMatrix.transposeLocal();
-        // System.out.print("projectionMatrix 2:" +  projectionMatrix.toString());
-
 
         modelViewProjectionInverse.set(modelViewMatrix).multLocal(projectionMatrix);
         modelViewProjectionInverse.invertLocal();
-
-//        System.out.print("modelViewProjectionInverse 2:" +  modelViewProjectionInverse.toString());
 
         if (useReal && rangeMatrix != null) {
             rangeMatrix.multLocal(modelViewProjectionInverse);
@@ -228,7 +197,6 @@ public class MyProjectedGrid extends Mesh {
 
         source.set(0, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomLeft);
-        //System.out.println("intersectBottomLeft : " + intersectBottomLeft.toString());
 
         source.set(0, 1);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopLeft);
@@ -236,7 +204,7 @@ public class MyProjectedGrid extends Mesh {
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectTopRight);
         source.set(1, 0);
         getWorldIntersection(height, source, modelViewProjectionInverse, intersectBottomRight);
-        //System.out.println("intersectBottomRight : " + intersectBottomRight.toString());
+        
 
         vertBuf.rewind();
         float du = 1.0f / (float) (sizeX - 1);
@@ -327,7 +295,6 @@ public class MyProjectedGrid extends Mesh {
         Matrix4f rangeMatrix;
         ProjectedTextureUtil.matrixLookAt(fakeLoc, fakePoint, Vector3f.UNIT_Y, modelViewMatrix1);
         ProjectedTextureUtil.matrixProjection(fovY, viewPortWidth / viewPortHeight, cam.getFrustumNear(), cam.getFrustumFar(), projectionMatrix1);
-        //projectionMatrix1.transposeLocal();
         modelViewProjection1.set(modelViewMatrix1).multLocal(projectionMatrix1);
         modelViewProjectionInverse1.set(modelViewProjection1).invertLocal();
 
@@ -356,11 +323,6 @@ public class MyProjectedGrid extends Mesh {
         tmp.set(intersectBottomRight1.getX(), intersectBottomRight1.getY(), intersectBottomRight1.getZ());
         modelViewProjection1.mult(tmp, tmp);
         intersectBottomRight1.set(tmp.x, tmp.y, tmp.z, intersectBottomRight1.getW());
-
-//			modelViewProjection1.mult( intersectBottomLeft1, intersectBottomLeft1 );
-//			modelViewProjection1.mult( intersectTopLeft1, intersectTopLeft1 );
-//			modelViewProjection1.mult( intersectTopRight1, intersectTopRight1 );
-//			modelViewProjection1.mult( intersectBottomRight1, intersectBottomRight1 );
 
         float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, maxX = Float.MIN_VALUE, maxY = Float.MIN_VALUE;
         if (intersectBottomLeft1.getX() < minX) {
@@ -428,20 +390,12 @@ public class MyProjectedGrid extends Mesh {
         resultVec.w = (1 - changeAmnt) * beginVec.w + changeAmnt * finalVec.w;
     }
 
-    private void interpolate(Vector3f beginVec, Vector3f finalVec, float changeAmnt, Vector3f resultVec) {
-        resultVec.x = (1 - changeAmnt) * beginVec.getX() + changeAmnt * finalVec.getX();
-        resultVec.y = (1 - changeAmnt) * beginVec.getY() + changeAmnt * finalVec.getY();
-        resultVec.z = (1 - changeAmnt) * beginVec.getZ() + changeAmnt * finalVec.getZ();
-    }
-
     public static Vector4f getWorldIntersection(float camheight, Vector2f screenPosition, Matrix4f viewProjectionMatrix, Vector4f store) {
         Vector4f origin = new Vector4f();
         Vector4f direction = new Vector4f();
 
         origin.set(screenPosition.getX() * 2 - 1, screenPosition.getY() * 2 - 1, -1, 1);
         direction.set(screenPosition.getX() * 2 - 1, screenPosition.getY() * 2 - 1, 1, 1);
-
-
 
         origin = viewProjectionMatrix.transpose().mult(origin);
         direction = viewProjectionMatrix.transpose().mult(direction);
@@ -466,39 +420,12 @@ public class MyProjectedGrid extends Mesh {
         return store;
     }
 
-    private float homogenousIntersect(Quaternion a, Quaternion xa, Quaternion xb) {
-//        float tx = -xb.w*(dotXYZ(a.getX()yz,xa.getX()yz)+xa.w*a.w);
-//        float tw = dotXYZ(a,xa.w*xb.getX()yz-xb.w*xa.getX()yz);
-//        return tx/tw;
-        return 0;
-    }
 
+    @Override
     public int getVertexCount() {
         return sizeX * sizeY;
     }
 
-    private float dotXYZ(Quaternion a, Quaternion b) {
-        return a.getX() * b.getX() + a.getY() * b.getY() + a.getZ() * b.getZ();
-    }
-
-    private void mulXYZ(Quaternion a, Quaternion b) {
-    }
-
-    /**
-     * <code>setDetailTexture</code> copies the texture coordinates from the
-     * first texture channel to another channel specified by unit, mulitplying
-     * by the factor specified by repeat so that the texture in that channel
-     * will be repeated that many times across the block.
-     * 
-     * @param unit
-     *            channel to copy coords to
-     * @param repeat
-     *            number of times to repeat the texture across and down the
-     *            block
-     */
-    public void setDetailTexture(int unit, float repeat) {
-        //	copyTextureCoordinates(0, unit, repeat);
-    }
 
     /**
      * <code>getSurfaceNormal</code> returns the normal of an arbitrary point
@@ -544,8 +471,6 @@ public class MyProjectedGrid extends Mesh {
      * @return the normal unit vector at the provided location.
      */
     public Vector3f getSurfaceNormal(float x, float z, Vector3f store) {
-//        x /= stepScale.getX();
-//        z /= stepScale.getZ();
         float col = FastMath.floor(x);
         float row = FastMath.floor(z);
 
