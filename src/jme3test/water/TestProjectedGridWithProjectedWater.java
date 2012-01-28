@@ -59,7 +59,6 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
 
     MyProjectedGrid grid;
     Geometry projectedGridGeometry;
-    Triangle t;
     Geometry lightSphere;
     Node sceneNode;
     ProjectedWaterProcessorWithRefraction waterProcessor;
@@ -81,9 +80,9 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         addSkybox();
         
         /** A simple textured cube. Uses Texture from jme3-test-data library! */
-        Box boxshape1 = new Box(1f, 1f, 1f);
+        Box boxshape1 = new Box(5f, 5f, 5f);
         Geometry cube = new Geometry("A Textured Box", boxshape1);
-        cube.setLocalTranslation(0, 2, -10);
+        cube.setLocalTranslation(0, 6, -20);
         Material mat_stl = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
         Texture tex_ml = assetManager.loadTexture("Interface/Logo/Monkey.jpg");
         mat_stl.setTexture("DiffuseMap", tex_ml);
@@ -92,9 +91,9 @@ public class TestProjectedGridWithProjectedWater extends SimpleApplication {
         sceneNode.attachChild(cube);
                
         /** A simple textured cube. Uses Texture from jme3-test-data library! */
-        Box boxshape2 = new Box(30f, 3f, 60f);
+        Box boxshape2 = new Box(10f, 3f, 10f);
         Geometry cube2 = new Geometry("A Textured Box", boxshape2);
-        cube2.setLocalTranslation(0, -4, -1);
+        cube2.setLocalTranslation(0, -4, -10);
         cube2.setMaterial(mat_stl);                        
         sceneNode.attachChild(cube2);
         

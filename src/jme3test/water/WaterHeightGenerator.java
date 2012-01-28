@@ -1,14 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package jme3test.water;
-
-import com.jme3.math.FastMath;
-import org.novyon.noise.basis.ImprovedNoise;
-
-/*
- * Copyright (c) 2003-2009 jMonkeyEngine
+ * Copyright (c) 2003-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,10 +29,10 @@ import org.novyon.noise.basis.ImprovedNoise;
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package jme3test.water;
 
-
-
-
+import com.jme3.math.FastMath;
+import org.novyon.noise.basis.ImprovedNoise;
 
 /**
  * <code>WaterHeightGenerator</code>

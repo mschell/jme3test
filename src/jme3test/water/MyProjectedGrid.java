@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2009 jMonkeyEngine
+ * Copyright (c) 2003-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ import javax.vecmath.TexCoord2f;
  * Projected grid mesh
  *
  * @author Rikard Herlitz (MrCoder)
- * @author Matthias Schellhase port to jme3
+ * @author Matthias Schellhase portage to jme3
  */
 public class MyProjectedGrid extends Mesh {
 

@@ -57,7 +57,6 @@ public class TestProjectedGridWithFlatwater extends SimpleApplication {
     MyProjectedGrid grid;
     Spatial quad;
     Geometry projectedGridGeometry;
-    Triangle t;
     Geometry lightSphere;
     Node sceneNode;
     FlatWaterProcessor waterProcessor;
@@ -125,8 +124,14 @@ public class TestProjectedGridWithFlatwater extends SimpleApplication {
     
     
     private void addProjectedGrid(){
-         grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new MyHeightGenerator());
-        projectedGridGeometry = new Geometry("Projected Grid", grid);  // create cube geometry from the shape
+         grid = new MyProjectedGrid(timer, cam, 100, 70, 1f, new HeightGenerator(){
+
+            public float getHeight(float x, float z, float time) {
+                return 0f;
+            }
+             
+         });
+        projectedGridGeometry = new Geometry("Projected Grid", grid);  
         projectedGridGeometry.setCullHint(CullHint.Never);
         projectedGridGeometry.setMaterial(setFlatWaterProcessor());
         projectedGridGeometry.setLocalTranslation(0, 0, 0);

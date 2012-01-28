@@ -1,7 +1,5 @@
-
-
 /*
- * Copyright (c) 2003-2009 jMonkeyEngine
+ * Copyright (c) 2003-2012 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,8 +49,7 @@ import com.jme3.texture.Texture;
  *
  * @author Joshua Ellen (basixs)
  * [1-16-2009] - Abstracted, removed direct calls to openGL
- * @author Matthias Schellhase (Matthias)
- * ported to jme3
+ * @author Matthias Schellhase portage to jme3
  */
 public class ProjectedTextureUtil {
 
