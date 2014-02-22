@@ -164,8 +164,10 @@ public class ProjectedWaterProcessorWithRefraction implements SceneProcessor {
 
     protected void createPreViews() {
         reflectionCam = new Camera(renderWidth, renderHeight);
+        reflectionCam.setParallelProjection(false);
         refractionCam = new Camera(renderWidth, renderHeight);
-
+        refractionCam.setParallelProjection(false);
+        
         // create a pre-view. a view that is rendered before the main view
         reflectionView = new ViewPort("Reflection View", reflectionCam);
         reflectionView.setClearFlags(true, true, true);

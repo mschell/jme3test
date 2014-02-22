@@ -32,7 +32,8 @@
 package jme3test.water;
 
 import com.jme3.math.FastMath;
-import org.novyon.noise.basis.ImprovedNoise;
+import com.jme3.terrain.noise.basis.ImprovedNoise;
+
 
 /**
  * <code>WaterHeightGenerator</code>
